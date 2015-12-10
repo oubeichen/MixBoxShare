@@ -27,6 +27,8 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
         mToggle1.setChecked(mPrefs.getBoolean(Constant.TOGGLE1, false));
         mToggle2.setChecked(mPrefs.getBoolean(Constant.TOGGLE2, false));
 
+        mToggle1.setOnCheckedChangeListener(this);
+        mToggle2.setOnCheckedChangeListener(this);
     }
 
     @Override

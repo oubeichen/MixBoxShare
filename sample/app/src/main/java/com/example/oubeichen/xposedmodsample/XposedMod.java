@@ -54,7 +54,6 @@ public class XposedMod implements IXposedHookZygoteInit, IXposedHookLoadPackage,
                     AndroidAppHelper.currentApplication()
                             .registerReceiver(new XposedReceiver(param.thisObject),
                             new IntentFilter(Constant.UPDATE));
-                    XposedBridge.log("registerd");
                 }
             });
         } catch (Throwable ex) {

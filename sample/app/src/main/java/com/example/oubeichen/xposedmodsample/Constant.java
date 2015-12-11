@@ -22,4 +22,5 @@ public class Constant {
     public static final String UPDATE = PACKAGENAME + ".UPDATE";
     public static final String UPDATE_CLOCK_ACTION = "update_clock";
     public static final String ACTION = "action";
+    public static final String NOTHING = "nothing";
 }

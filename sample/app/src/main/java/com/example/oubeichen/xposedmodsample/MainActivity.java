@@ -48,6 +48,7 @@ public class MainActivity extends Activity implements CompoundButton.OnCheckedCh
             intent.putExtra(Constant.ACTION, Constant.UPDATE_CLOCK_ACTION);
         } else if (button == mToggle2) {
             editor.putBoolean(Constant.TOGGLE2, button.isChecked());
+            intent.putExtra(Constant.ACTION, Constant.NOTHING);
         }
         editor.commit();
         sendBroadcast(intent);

@@ -22,7 +22,7 @@ public class XposedReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         XposedBridge.log("on receive");
-        if (Constant.UPDATE_CLOCK_ACTION.equals(intent.getExtras().getString(Constant.ACTION))) {
+        if (Constant.UPDATE_CLOCK_ACTION.equals(intent.getExtras().getString(Constant.ACTION, ""))) {
             XposedHelpers.callMethod(clockSvc, "updateClock");
         }
     }

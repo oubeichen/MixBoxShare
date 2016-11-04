@@ -19,13 +19,7 @@ public class Constant {
             .getExternalStorageDirectory().getAbsolutePath() + File.separator + "xposedsample";
     public static final String FILEPATH = FILEDIRPATH + File.separator + "hehe2.png";// 文件路径
 
-    public static final String PERMISSION = PACKAGENAME + ".BROADCAST_PERMISSION";
-
     public static final String UPDATE = PACKAGENAME + ".UPDATE";
     public static final String UPDATE_CLOCK_ACTION = "update_clock";
-    public static final String KILL = PACKAGENAME + ".KILL";
-    public static final String KILL_PACKAGE = "kill_package";
-    public static final String KILL_ACTION = "kill";
     public static final String ACTION = "action";
-    public static final String NOTHING = "nothing";
 }

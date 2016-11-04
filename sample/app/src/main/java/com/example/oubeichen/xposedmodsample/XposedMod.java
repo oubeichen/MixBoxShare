@@ -1,7 +1,6 @@
 package com.example.oubeichen.xposedmodsample;
 
 import android.app.AndroidAppHelper;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.IntentFilter;
 import android.content.res.XResources;
@@ -14,16 +13,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.File;
-import java.lang.reflect.Method;
 
 import de.robv.android.xposed.IXposedHookInitPackageResources;
 import de.robv.android.xposed.IXposedHookLoadPackage;
 import de.robv.android.xposed.IXposedHookZygoteInit;
 import de.robv.android.xposed.XC_MethodHook;
-import de.robv.android.xposed.XC_MethodReplacement;
 import de.robv.android.xposed.XSharedPreferences;
 import de.robv.android.xposed.XposedBridge;
-import de.robv.android.xposed.XposedHelpers;
 import de.robv.android.xposed.callbacks.XC_InitPackageResources;
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
 
@@ -45,7 +41,6 @@ public class XposedMod implements IXposedHookZygoteInit, IXposedHookLoadPackage,
     @Override
     public void initZygote(IXposedHookZygoteInit.StartupParam startupParam) throws Throwable {
         loadPrefs();
-        XposedKillAppReceiver.initPmSvcHook();
     }
 
 
@@ -62,7 +57,7 @@ public class XposedMod implements IXposedHookZygoteInit, IXposedHookLoadPackage,
                 protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                     AndroidAppHelper.currentApplication()
                             .registerReceiver(new XposedReceiver(param.thisObject),
-                            new IntentFilter(Constant.UPDATE));
+                                    new IntentFilter(Constant.UPDATE));
                 }
             });
         } catch (Throwable ex) {

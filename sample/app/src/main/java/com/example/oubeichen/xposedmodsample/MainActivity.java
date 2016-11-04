@@ -55,17 +55,9 @@ public class MainActivity extends Activity implements CompoundButton.OnCheckedCh
         } else if (button == mToggle2) {
             editor.putBoolean(Constant.TOGGLE2, button.isChecked());
             editor.commit();
-            Intent intent = new Intent(Constant.KILL);
-            intent.putExtra(Constant.ACTION, Constant.KILL_ACTION);
-            intent.putExtra(Constant.PACKAGENAME, "im.mixbox.magnet");
-            sendBroadcast(intent, Constant.PACKAGENAME + ".BROADCAST_PERMISSION");
         } else if (button == mToggle3) {
             editor.putBoolean(Constant.TOGGLE3, button.isChecked());
             editor.commit();
-            Intent intent = new Intent(Constant.KILL);
-            intent.putExtra(Constant.ACTION, Constant.KILL_ACTION);
-            intent.putExtra(Constant.PACKAGENAME, "im.mixbox.magnet");
-            sendBroadcast(intent, Constant.PACKAGENAME + ".BROADCAST_PERMISSION");
         }
     }
 

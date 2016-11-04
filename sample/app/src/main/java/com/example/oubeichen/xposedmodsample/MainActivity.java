@@ -16,6 +16,7 @@ public class MainActivity extends Activity implements CompoundButton.OnCheckedCh
 
     ToggleButton mToggle1;
     ToggleButton mToggle2;
+    ToggleButton mToggle3;
 
     private SharedPreferences mPrefs;
 
@@ -26,14 +27,17 @@ public class MainActivity extends Activity implements CompoundButton.OnCheckedCh
 
         mToggle1 = (ToggleButton) findViewById(R.id.toggle1);
         mToggle2 = (ToggleButton) findViewById(R.id.toggle2);
+        mToggle3 = (ToggleButton) findViewById(R.id.toggle3);
 
         mPrefs = getSharedPreferences(Constant.PREFS, Activity.MODE_WORLD_READABLE);
 
         mToggle1.setChecked(mPrefs.getBoolean(Constant.TOGGLE1, false));
         mToggle2.setChecked(mPrefs.getBoolean(Constant.TOGGLE2, false));
+        mToggle3.setChecked(mPrefs.getBoolean(Constant.TOGGLE3, false));
 
         mToggle1.setOnCheckedChangeListener(this);
         mToggle2.setOnCheckedChangeListener(this);
+        mToggle3.setOnCheckedChangeListener(this);
 
         createFile();
     }
@@ -42,16 +46,27 @@ public class MainActivity extends Activity implements CompoundButton.OnCheckedCh
     public void onCheckedChanged(CompoundButton button, boolean isChecked) {
 
         SharedPreferences.Editor editor = mPrefs.edit();
-        Intent intent = new Intent(Constant.UPDATE);
         if (button == mToggle1) {
             editor.putBoolean(Constant.TOGGLE1, button.isChecked());
+            editor.commit();
+            Intent intent = new Intent(Constant.UPDATE);
             intent.putExtra(Constant.ACTION, Constant.UPDATE_CLOCK_ACTION);
+            sendBroadcast(intent);
         } else if (button == mToggle2) {
             editor.putBoolean(Constant.TOGGLE2, button.isChecked());
-            intent.putExtra(Constant.ACTION, Constant.NOTHING);
+            editor.commit();
+            Intent intent = new Intent(Constant.KILL);
+            intent.putExtra(Constant.ACTION, Constant.KILL_ACTION);
+            intent.putExtra(Constant.PACKAGENAME, "im.mixbox.magnet");
+            sendBroadcast(intent, Constant.PACKAGENAME + ".BROADCAST_PERMISSION");
+        } else if (button == mToggle3) {
+            editor.putBoolean(Constant.TOGGLE3, button.isChecked());
+            editor.commit();
+            Intent intent = new Intent(Constant.KILL);
+            intent.putExtra(Constant.ACTION, Constant.KILL_ACTION);
+            intent.putExtra(Constant.PACKAGENAME, "im.mixbox.magnet");
+            sendBroadcast(intent, Constant.PACKAGENAME + ".BROADCAST_PERMISSION");
         }
-        editor.commit();
-        sendBroadcast(intent);
     }
 
 

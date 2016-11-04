@@ -8,6 +8,8 @@ import java.io.File;
 public class Constant {
     public static final String TOGGLE1 = "toggle1";
     public static final String TOGGLE2 = "toggle2";
+    public static final String TOGGLE3 = "toggle3";
+
 
     public static final String PREFS = "prefs";
 
@@ -21,6 +23,9 @@ public class Constant {
 
     public static final String UPDATE = PACKAGENAME + ".UPDATE";
     public static final String UPDATE_CLOCK_ACTION = "update_clock";
+    public static final String KILL = PACKAGENAME + ".KILL";
+    public static final String KILL_PACKAGE = "kill_package";
+    public static final String KILL_ACTION = "kill";
     public static final String ACTION = "action";
     public static final String NOTHING = "nothing";
 }

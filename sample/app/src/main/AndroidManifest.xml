@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.oubeichen.xposedmodsample" >
+    <permission
+        android:name="com.example.oubeichen.xposedmodsample.BROADCAST_PERMISSION"
+        android:protectionLevel="dangerous" />
 
+    <uses-permission android:name="com.example.oubeichen.xposedmodsample.BROADCAST_PERMISSION" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
 
     <application

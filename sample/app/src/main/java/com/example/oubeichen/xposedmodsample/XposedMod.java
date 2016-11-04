@@ -1,6 +1,7 @@
 package com.example.oubeichen.xposedmodsample;
 
 import android.app.AndroidAppHelper;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.IntentFilter;
 import android.content.res.XResources;
@@ -10,15 +11,19 @@ import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.File;
+import java.lang.reflect.Method;
 
 import de.robv.android.xposed.IXposedHookInitPackageResources;
 import de.robv.android.xposed.IXposedHookLoadPackage;
 import de.robv.android.xposed.IXposedHookZygoteInit;
 import de.robv.android.xposed.XC_MethodHook;
+import de.robv.android.xposed.XC_MethodReplacement;
 import de.robv.android.xposed.XSharedPreferences;
 import de.robv.android.xposed.XposedBridge;
+import de.robv.android.xposed.XposedHelpers;
 import de.robv.android.xposed.callbacks.XC_InitPackageResources;
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
 
@@ -40,12 +45,16 @@ public class XposedMod implements IXposedHookZygoteInit, IXposedHookLoadPackage,
     @Override
     public void initZygote(IXposedHookZygoteInit.StartupParam startupParam) throws Throwable {
         loadPrefs();
+        XposedKillAppReceiver.initPmSvcHook();
     }
 
+
+    @Override
     public void handleLoadPackage(final XC_LoadPackage.LoadPackageParam lpparam) throws Throwable {
 
-        if (!lpparam.packageName.equals("com.android.systemui"))
+        if (!lpparam.packageName.equals("com.android.systemui") && !lpparam.packageName.equals("im.mixbox.magnet"))
             return;
+        XposedBridge.log(lpparam.packageName);
         try {
             Class<?> clazz = findClass("com.android.systemui.statusbar.policy.Clock", lpparam.classLoader);
             XposedBridge.hookAllConstructors(clazz, new XC_MethodHook() {
@@ -60,21 +69,54 @@ public class XposedMod implements IXposedHookZygoteInit, IXposedHookLoadPackage,
             XposedBridge.log("cannot find class");
         }
         //https://github.com/MoKee/android_frameworks_base/blob/kk_mkt/packages/SystemUI/src/com/android/systemui/statusbar/policy/Clock.java
-        findAndHookMethod("com.android.systemui.statusbar.policy.Clock", lpparam.classLoader, "updateClock", new XC_MethodHook() {
-            @Override
-            protected void afterHookedMethod(XC_MethodHook.MethodHookParam param) throws Throwable {
-                mPrefs.reload();
-                TextView tv = (TextView) param.thisObject;
-                if (mPrefs.getBoolean(Constant.TOGGLE1, false)) {
-                    String text = tv.getText().toString();
-                    tv.setText(text + " :)");
-                    tv.setTextColor(Color.RED);
-                } else {
-                    tv.setTextColor(Color.WHITE);
+        try {
+            findAndHookMethod("com.android.systemui.statusbar.policy.Clock", lpparam.classLoader, "updateClock", new XC_MethodHook() {
+                @Override
+                protected void afterHookedMethod(XC_MethodHook.MethodHookParam param) throws Throwable {
+                    mPrefs.reload();
+                    TextView tv = (TextView) param.thisObject;
+                    if (mPrefs.getBoolean(Constant.TOGGLE1, false)) {
+                        String text = tv.getText().toString();
+                        tv.setText(text + " :)");
+                        tv.setTextColor(Color.RED);
+                    } else {
+                        tv.setTextColor(Color.WHITE);
+                    }
                 }
-            }
-        });
+            });
+        } catch (Throwable ex) {
+        }
+        try {
+            findAndHookMethod("im.mixbox.magnet.activities.LoadActivity", lpparam.classLoader, "wechatLogin", new XC_MethodHook() {
+                @Override
+                protected void beforeHookedMethod(MethodHookParam methodHookParam) throws Throwable {
+                    if (mPrefs.getBoolean(Constant.TOGGLE3, false)) {
+                        Toast.makeText(AndroidAppHelper.currentApplication(), "粑粑不想让你登录", Toast.LENGTH_SHORT).show();
+                        methodHookParam.setResult(null);
+                    }
+                }
+            });
+            findAndHookMethod("im.mixbox.magnet.activities.LoadActivity", lpparam.classLoader, "emailLogin", new XC_MethodHook() {
+                @Override
+                protected void beforeHookedMethod(MethodHookParam methodHookParam) throws Throwable {
+                    if (mPrefs.getBoolean(Constant.TOGGLE3, false)) {
+                        Toast.makeText(AndroidAppHelper.currentApplication(), "麻麻不想让你登录", Toast.LENGTH_SHORT).show();
+                        methodHookParam.setResult(null);
+                    }
+                }
+            });
+            findAndHookMethod("im.mixbox.magnet.activities.LoadActivity", lpparam.classLoader, "register", new XC_MethodHook() {
+                @Override
+                protected void beforeHookedMethod(MethodHookParam methodHookParam) throws Throwable {
+                    if (mPrefs.getBoolean(Constant.TOGGLE3, false)) {
+                        Toast.makeText(AndroidAppHelper.currentApplication(), "宝宝不想让你注册", Toast.LENGTH_SHORT).show();
+                        methodHookParam.setResult(null);
+                    }
+                }
+            });
+        } catch (Exception ex) {
 
+        }
     }
 
     @Override
@@ -86,7 +128,7 @@ public class XposedMod implements IXposedHookZygoteInit, IXposedHookLoadPackage,
         mPrefs.reload();
         if (mPrefs.getBoolean(Constant.TOGGLE2, false)) {
             resparam.res.setReplacement("im.mixbox.magnet", "string", "wechat_login", "哈哈,你被Hack了!!");
-            resparam.res.setReplacement("im.mixbox.magnet", "drawable", "login_img_bg", new XResources.DrawableLoader() {
+            resparam.res.setReplacement("im.mixbox.magnet", "drawable", "bg_splash", new XResources.DrawableLoader() {
                 @Override
                 public Drawable newDrawable(XResources res, int id) throws Throwable {
                     Bitmap bitmap = null;

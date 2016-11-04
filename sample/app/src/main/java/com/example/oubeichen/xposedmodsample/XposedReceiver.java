@@ -25,4 +25,6 @@ public class XposedReceiver extends BroadcastReceiver {
             XposedHelpers.callMethod(clockSvc, "updateClock");
         }
     }
+
+
 }
